@@ -12,11 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ahwan.interntrack.data.ApplicationEntity
 import com.ahwan.interntrack.model.InternshipApplication
 
 @Composable
 fun ApplicationCard(
-    application: InternshipApplication,
+    application: ApplicationEntity,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -29,7 +30,7 @@ fun ApplicationCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = application.compnanyName,
+                text = application.companyName,
                 style = MaterialTheme.typography.titleMedium
             )
 
@@ -47,12 +48,15 @@ fun ApplicationCard(
                 style = MaterialTheme.typography.bodySmall
             )
 
-            StatusChip(status = application.status)
+            Text(
+                text = application.status,
+                style = MaterialTheme.typography.labelMedium
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Deadline: ${application.notes}",
+                text = "Notes: ${application.notes}",
                 style = MaterialTheme.typography.bodySmall
             )
         }
