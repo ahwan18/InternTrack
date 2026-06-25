@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.lifecycle.ViewModelProvider
 import com.ahwan.interntrack.data.ApplicationRepository
 import com.ahwan.interntrack.data.DatabaseProvider
-import com.ahwan.interntrack.ui.screen.ApplicationListScreen
+import com.ahwan.interntrack.navigation.AppNavigation
 import com.ahwan.interntrack.ui.theme.InternTrackTheme
 import com.ahwan.interntrack.viewmodel.ApplicationViewModel
 import com.ahwan.interntrack.viewmodel.ApplicationViewModelFactory
@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             InternTrackTheme {
-                ApplicationListScreen(
+                AppNavigation(
                     viewModel = applicationViewModel
                 )
             }
