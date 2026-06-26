@@ -1,5 +1,6 @@
 package com.ahwan.interntrack.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,10 +19,15 @@ import com.ahwan.interntrack.model.InternshipApplication
 @Composable
 fun ApplicationCard(
     application: ApplicationEntity,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
         elevation = CardDefaults.cardElevation(
             defaultElevation = 2.dp
         )
@@ -56,7 +62,7 @@ fun ApplicationCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Notes: ${application.notes}",
+                text = "Tap to view details",
                 style = MaterialTheme.typography.bodySmall
             )
         }

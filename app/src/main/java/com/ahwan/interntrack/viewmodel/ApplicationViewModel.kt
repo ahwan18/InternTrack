@@ -1,5 +1,6 @@
 package com.ahwan.interntrack.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ahwan.interntrack.data.ApplicationEntity
@@ -45,6 +46,10 @@ class ApplicationViewModel(
         selectedStatus.value = status
     }
 
+    suspend fun getApplicationById(id: Int): ApplicationEntity? {
+        return repository.getApplicationById(id)
+    }
+
     fun insertApplication(
         companyName: String,
         position: String,
@@ -64,6 +69,38 @@ class ApplicationViewModel(
                     notes = notes
                 )
             )
+        }
+    }
+
+    fun updateApplication(
+        id: Int,
+        companyName: String,
+        position: String,
+        location: String,
+        status: String,
+        notes: String,
+        applicationDate: Long,
+        deadlineDate: Long?
+    ) {
+        viewModelScope.launch {
+            repository.updateApplication(
+                ApplicationEntity(
+                    id = id,
+                    companyName = companyName,
+                    position = position,
+                    location = location,
+                    applicationDate = applicationDate,
+                    deadlineDate = deadlineDate,
+                    status = status,
+                    notes = notes
+                )
+            )
+        }
+    }
+
+    fun deleteApplication(application: ApplicationEntity) {
+        viewModelScope.launch {
+            repository.deleteApplication(application)
         }
     }
 

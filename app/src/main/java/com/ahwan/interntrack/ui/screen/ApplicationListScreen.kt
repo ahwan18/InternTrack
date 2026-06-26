@@ -28,7 +28,8 @@ import com.ahwan.interntrack.viewmodel.ApplicationViewModel
 @Composable
 fun ApplicationListScreen(
     viewModel: ApplicationViewModel,
-    onAddApplicationClick: () -> Unit
+    onAddApplicationClick: () -> Unit,
+    onApplicationClick: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -95,7 +96,12 @@ fun ApplicationListScreen(
                 }
             } else {
                 items(uiState.applications) { application ->
-                    ApplicationCard(application = application)
+                    ApplicationCard(
+                        application = application,
+                        onClick = {
+                            onApplicationClick(application.id)
+                        }
+                    )
                 }
             }
         }

@@ -17,7 +17,9 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,9 +31,12 @@ import com.ahwan.interntrack.viewmodel.ApplicationViewModel
 @Composable
 fun AddApplicationScreen(
     viewModel: ApplicationViewModel,
+    applicationId: Int? = null,
     onBackClick:() -> Unit,
     onApplicationSaved: () -> Unit
 ) {
+    val isEditMode = applicationId != null
+
     var companyName by remember { mutableStateOf("") }
     var position by remember { mutableStateOf("") }
     var location by remember { mutableStateOf("") }
@@ -39,11 +44,41 @@ fun AddApplicationScreen(
     var notes by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    var applicationDate by remember {
+        mutableLongStateOf(System.currentTimeMillis())
+    }
+
+    var deadlineDate by remember {
+        mutableStateOf<Long?>(null)
+    }
+
+    LaunchedEffect(applicationId) {
+        if (applicationId != null) {
+            val application = viewModel.getApplicationById(applicationId)
+
+            if (application != null) {
+                companyName = application.companyName
+                position = application.position
+                location = application.location
+                selectedStatus = application.status
+                notes = application.notes
+                applicationDate = application.applicationDate
+                deadlineDate = application.deadlineDate
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(text = "Add Application")
+                    Text(
+                        text = if (isEditMode) {
+                            "Edit Application"
+                        } else {
+                            "Add Application"
+                        }
+                    )
                 }
             )
         }
@@ -122,18 +157,37 @@ fun AddApplicationScreen(
                         return@Button
                     }
 
-                    viewModel.insertApplication(
-                        companyName = companyName,
-                        position = position,
-                        location = location.ifBlank { "Not Specified" },
-                        status = selectedStatus,
-                        notes = notes.ifBlank { "No notes" }
-                    )
+                    if (isEditMode && applicationId != null) {
+                        viewModel.updateApplication(
+                            id = applicationId,
+                            companyName = companyName,
+                            position = position,
+                            location = location.ifBlank { "Not specified" },
+                            status = selectedStatus,
+                            notes = notes.ifBlank { "No notes" },
+                            applicationDate = applicationDate,
+                            deadlineDate = deadlineDate
+                        )
+                    } else {
+                        viewModel.insertApplication(
+                            companyName = companyName,
+                            position = position,
+                            location = location.ifBlank { "Not Specified" },
+                            status = selectedStatus,
+                            notes = notes.ifBlank { "No notes" }
+                        )
+                    }
 
                     onApplicationSaved()
                 }
             ) {
-                Text(text = "Save Application")
+                Text(
+                    text = if (isEditMode) {
+                        "Update Application"
+                    } else {
+                        "Save Application"
+                    }
+                )
             }
 
             OutlinedButton(
