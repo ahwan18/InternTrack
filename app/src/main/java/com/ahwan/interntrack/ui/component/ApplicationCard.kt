@@ -1,11 +1,14 @@
 package com.ahwan.interntrack.ui.component
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -15,6 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ahwan.interntrack.data.ApplicationEntity
 import com.ahwan.interntrack.model.InternshipApplication
+import com.ahwan.interntrack.util.formatDate
+import com.ahwan.interntrack.util.getDaysLeftText
+import com.ahwan.interntrack.util.isDueSoon
+import com.ahwan.interntrack.util.getProgressLabel
+import com.ahwan.interntrack.util.getProgressPercentage
 
 @Composable
 fun ApplicationCard(
@@ -35,17 +43,33 @@ fun ApplicationCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = application.companyName,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = application.companyName,
+                        style = MaterialTheme.typography.titleMedium
+                    )
 
-            Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = application.position,
-                style = MaterialTheme.typography.bodyMedium
-            )
+                    Text(
+                        text = application.position,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
+                AssistChip(
+                    onClick = {},
+                    label = {
+                        Text(text = application.status)
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(4.dp))
 
@@ -54,17 +78,45 @@ fun ApplicationCard(
                 style = MaterialTheme.typography.bodySmall
             )
 
+            Spacer(modifier = Modifier.height(8.dp))
+
             Text(
-                text = application.status,
-                style = MaterialTheme.typography.labelMedium
+                text = "Deadline : ${formatDate(application.deadlineDate)}",
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            Text(
+                text = getDaysLeftText(application.deadlineDate),
+                style = MaterialTheme.typography.bodySmall
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
+                text = "Progress: ${getProgressPercentage(application.status)}%",
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            Text(
+                text = getProgressLabel(application.status),
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            Text(
                 text = "Tap to view details",
                 style = MaterialTheme.typography.bodySmall
             )
+
+            if (isDueSoon(application.deadlineDate)) {
+                Spacer(modifier = Modifier.height(8.dp))
+
+                AssistChip(
+                    onClick = {},
+                    label = {
+                        Text(text = "Due soon")
+                    }
+                )
+            }
         }
     }
 }

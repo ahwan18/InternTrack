@@ -31,10 +31,38 @@ class ApplicationViewModel(
                 }
             }
 
+            val totalApplications = applications.size
+            val savedCount = applications.count { it.status == "Saved" }
+            val appliedCount = applications.count { it.status == "Applied" }
+            val interviewCount = applications.count { it.status == "Interview" }
+            val offerCount = applications.count { it.status == "Offer" }
+            val rejectedCount = applications.count { it.status == "Rejected" }
+
+            val interviewRate = if (totalApplications > 0) {
+                ((interviewCount.toDouble() / totalApplications) * 100).toInt()
+            } else {
+                0
+            }
+
+            val offerRate = if (totalApplications > 0) {
+                ((offerCount.toDouble() / totalApplications) * 100).toInt()
+            } else {
+                0
+            }
+
             ApplicationUiState(
                 applications = filteredApplication,
+                allApplications = applications,
                 selectedStatus = status,
-                isLoading = false
+                isLoading = false,
+                totalApplications = totalApplications,
+                savedCount = savedCount,
+                appliedCount = appliedCount,
+                interviewCount = interviewCount,
+                offerCount = offerCount,
+                rejectedCount = rejectedCount,
+                interviewRate = interviewRate,
+                offerRate = offerRate
             )
         }.stateIn(
             scope = viewModelScope,
@@ -55,7 +83,8 @@ class ApplicationViewModel(
         position: String,
         location: String,
         status: String,
-        notes: String
+        notes: String,
+        deadlineDate: Long? = null
     ) {
         viewModelScope.launch {
             repository.insertApplication(
@@ -64,7 +93,7 @@ class ApplicationViewModel(
                     position = position,
                     location = location,
                     applicationDate = System.currentTimeMillis(),
-                    deadlineDate = null,
+                    deadlineDate = deadlineDate,
                     status = status,
                     notes = notes
                 )

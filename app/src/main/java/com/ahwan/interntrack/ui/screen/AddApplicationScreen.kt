@@ -42,6 +42,7 @@ fun AddApplicationScreen(
     var location by remember { mutableStateOf("") }
     var selectedStatus by remember { mutableStateOf("Saved") }
     var notes by remember { mutableStateOf("") }
+    var deadlineInDays by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
     var applicationDate by remember {
@@ -64,6 +65,7 @@ fun AddApplicationScreen(
                 notes = application.notes
                 applicationDate = application.applicationDate
                 deadlineDate = application.deadlineDate
+                deadlineInDays = ""
             }
         }
     }
@@ -136,6 +138,19 @@ fun AddApplicationScreen(
             )
 
             OutlinedTextField(
+                value = deadlineInDays,
+                onValueChange = {
+                    deadlineInDays = it.filter { character ->
+                        character.isDigit()
+                    }
+                },
+                label = {
+                    Text(text = "Deadline in days")
+                },
+                singleLine = true
+            )
+
+            OutlinedTextField(
                 value = notes,
                 onValueChange = {
                     notes = it
@@ -157,6 +172,12 @@ fun AddApplicationScreen(
                         return@Button
                     }
 
+                    val calculatedDeadlineDate = if (deadlineInDays.isBlank()) {
+                        deadlineDate
+                    } else {
+                        System.currentTimeMillis() + deadlineInDays.toLong() * 24 * 60 * 60 * 1000
+                    }
+
                     if (isEditMode && applicationId != null) {
                         viewModel.updateApplication(
                             id = applicationId,
@@ -166,7 +187,7 @@ fun AddApplicationScreen(
                             status = selectedStatus,
                             notes = notes.ifBlank { "No notes" },
                             applicationDate = applicationDate,
-                            deadlineDate = deadlineDate
+                            deadlineDate = calculatedDeadlineDate
                         )
                     } else {
                         viewModel.insertApplication(
@@ -174,7 +195,8 @@ fun AddApplicationScreen(
                             position = position,
                             location = location.ifBlank { "Not Specified" },
                             status = selectedStatus,
-                            notes = notes.ifBlank { "No notes" }
+                            notes = notes.ifBlank { "No notes" },
+                            deadlineDate = calculatedDeadlineDate
                         )
                     }
 

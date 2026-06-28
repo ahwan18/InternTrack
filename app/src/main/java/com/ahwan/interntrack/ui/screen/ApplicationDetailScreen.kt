@@ -29,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ahwan.interntrack.data.ApplicationEntity
 import com.ahwan.interntrack.viewmodel.ApplicationViewModel
+import com.ahwan.interntrack.util.formatDate
+import com.ahwan.interntrack.util.getDaysLeftText
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,6 +112,16 @@ fun ApplicationDetailScreen(
                         DetailItem(
                             label = "Status",
                             value = application.status
+                        )
+
+                        DetailItem(
+                            label = "Deadline",
+                            value = formatDate(application.deadlineDate)
+                        )
+
+                        DetailItem(
+                            label = "Time Left",
+                            value = getDaysLeftText(application.deadlineDate)
                         )
 
                         DetailItem(
