@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ahwan.interntrack.ui.component.ApplicationCard
 import com.ahwan.interntrack.viewmodel.ApplicationViewModel
 import com.ahwan.interntrack.ui.component.DashboardSection
+import com.ahwan.interntrack.ui.component.EmptyState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +48,7 @@ fun ApplicationListScreen(
             FloatingActionButton(
                 onClick = onAddApplicationClick
             ) {
-                Text(text = "+")
+                Text(text = "Add")
             }
         }
     ) { paddingValues ->
@@ -75,7 +76,20 @@ fun ApplicationListScreen(
                 }
             } else if (uiState.applications.isEmpty()) {
                 item {
-                    Text(text = "No application yet. Add sample data to test Room.")
+                    EmptyState(
+                        title = if (uiState.selectedStatus == "All") {
+                            "No applications yet"
+                        } else {
+                            "No ${uiState.selectedStatus} applications"
+                        },
+                        message = if (uiState.selectedStatus == "All") {
+                            "Start tracking your internship journey by adding your first application."
+                        } else {
+                            "Try selecting another status filter or add a new application."
+                        },
+                        buttonText = "Add application",
+                        onButtonClick = onAddApplicationClick
+                    )
                 }
             } else {
                 items(uiState.applications) { application ->

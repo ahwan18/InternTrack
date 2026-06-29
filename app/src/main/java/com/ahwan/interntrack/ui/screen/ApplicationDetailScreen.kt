@@ -27,6 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.LinearProgressIndicator
+import com.ahwan.interntrack.ui.component.StatusChip
+import com.ahwan.interntrack.ui.component.DueSoonChip
+import com.ahwan.interntrack.util.getProgressLabel
+import com.ahwan.interntrack.util.getProgressPercentage
+import com.ahwan.interntrack.util.isDueSoon
 import com.ahwan.interntrack.data.ApplicationEntity
 import com.ahwan.interntrack.viewmodel.ApplicationViewModel
 import com.ahwan.interntrack.util.formatDate
@@ -99,6 +105,16 @@ fun ApplicationDetailScreen(
                             style = MaterialTheme.typography.headlineSmall
                         )
 
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            StatusChip(status = application.status)
+
+                            if (isDueSoon(application.deadlineDate)) {
+                                DueSoonChip()
+                            }
+                        }
+
                         DetailItem(
                             label = "Position",
                             value = application.position
@@ -123,6 +139,27 @@ fun ApplicationDetailScreen(
                             label = "Time Left",
                             value = getDaysLeftText(application.deadlineDate)
                         )
+
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            Text(
+                                text = "Progress",
+                                style = MaterialTheme.typography.labelMedium
+                            )
+
+                            LinearProgressIndicator(
+                                progress = {
+                                    getProgressPercentage(application.status) / 100f
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Text(
+                                text = "${getProgressPercentage(application.status)}% · ${getProgressLabel(application.status)}",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
 
                         DetailItem(
                             label = "Notes",

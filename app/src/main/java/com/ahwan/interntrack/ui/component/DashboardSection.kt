@@ -3,6 +3,8 @@ package com.ahwan.interntrack.ui.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.ahwan.interntrack.viewmodel.ApplicationUiState
 import androidx.compose.ui.Modifier
@@ -17,6 +19,18 @@ fun DashboardSection(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        Column {
+            Text(
+                text = "Dashboard",
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Text(
+                text = "Your internship application overview",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
         SummaryCard(
             title = "Total Applications",
             value = uiState.totalApplications.toString(),

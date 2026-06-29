@@ -162,7 +162,10 @@ fun AddApplicationScreen(
             )
 
             if (errorMessage != null) {
-                Text(text = errorMessage!!)
+                Text(
+                    text = errorMessage!!,
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.error
+                )
             }
 
             Button(
